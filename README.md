@@ -1,73 +1,138 @@
-# holbertonschool-simple_shell
-
 # Simple Shell
 
 ## Description
 
-This project is a simple UNIX command-line interpreter written in C.
+`simple_shell` is a simple UNIX command-line interpreter written in C.
 
-The shell displays a prompt, waits for the user to enter a command, executes the command, and displays the prompt again.
+The shell displays a prompt, waits for the user to type a command, executes the command, and displays the prompt again after the command has been executed.
 
-The project is part of the Holberton School curriculum and focuses on processes, system calls, environment variables, and command execution.
+This project is part of the Holberton School curriculum and is designed to introduce the concepts of:
 
-## Compilation
-
-The shell can be compiled with:
-
-gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+* UNIX processes
+* Process creation
+* System calls
+* Command execution
+* Error handling
+* Standard input and output
+* Environment variables
 
 ## Usage
 
-Run the shell with:
+Start the shell by running:
 
+```bash
 ./hsh
+```
 
-The shell will display a prompt:
+The shell displays a prompt and waits for a command:
 
+```text
 $ 
+```
 
-You can then enter commands such as:
+Enter a command followed by Enter:
 
+```text
 $ ls
 $ pwd
 $ whoami
+```
 
-To exit the shell, press Ctrl+D.
+The prompt is displayed again after each command has been executed.
 
-## Features
+To exit the shell, press:
 
-The shell supports:
+```text
+Ctrl+D
+```
 
-- Interactive mode
-- Non-interactive mode
-- Command execution
-- Searching for commands using PATH
-- Error handling
-- End-of-file handling
+## Compilation
+
+Compile the shell using:
+
+```bash
+gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+```
 
 ## Examples
 
-Interactive mode:
+### Interactive mode
 
+```text
 $ ./hsh
 $ ls
+AUTHORS  README.md  main.c  shell.h
 $ pwd
+/home/user/simple_shell
 $ whoami
+user
+$ 
+```
 
-Non-interactive mode:
+### Command not found
 
-$ echo "ls" | ./hsh
+If an executable cannot be found, the shell displays an error message and displays the prompt again.
+
+```text
+$ ./hsh
+$ nonexistent
+./hsh: 1: nonexistent: not found
+$ 
+```
+
+## Supported Features
+
+The shell:
+
+* Displays a prompt.
+* Reads commands from standard input.
+* Executes commands.
+* Displays the prompt again after each command.
+* Handles errors.
+* Handles the end-of-file condition (`Ctrl+D`).
+
+## Limitations
+
+This shell is intentionally simple.
+
+It does not:
+
+* Use the `PATH` environment variable to locate commands.
+* Implement built-in commands.
+* Handle command arguments.
+* Handle semicolons (`;`).
+* Handle pipes (`|`).
+* Handle redirections (`>`, `<`, `>>`, etc.).
+* Handle special characters such as `"`, `'`, `` ` ``, `\`, `*`, `&`, and `#`.
+* Support cursor movement.
+
+Command lines contain only one word.
+
+## Files
+
+| File                 | Description                                  |
+| -------------------- | -------------------------------------------- |
+| `main.c`             | Contains the main entry point of the shell   |
+| `shell.h`            | Contains function prototypes and definitions |
+| `README.md`          | Project documentation                        |
+| `man_1_simple_shell` | Manual page for the shell                    |
+| `AUTHORS`            | Lists the contributors to the repository     |
 
 ## Man Page
 
-A manual page for the shell is available in:
+The manual page for the shell is located in:
 
+```text
 man_1_simple_shell
+```
 
 It can be viewed with:
 
+```bash
 man ./man_1_simple_shell
+```
 
 ## Authors
 
-See the AUTHORS file for the list of contributors.
+See the `AUTHORS` file for the list of contributors.
+
