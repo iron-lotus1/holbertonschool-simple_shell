@@ -25,13 +25,14 @@ int execute_command(char *command)
 
 	if (pid == 0)
 	{
-		execve(command, argv, NULL);
-
-		perror("./hsh");
-		exit(127);
+		if (execve(command, argv, environ) == -1)
+		{
+			perror("./hsh");
+			exit(127);
+		}
 	}
 
-	waitpid(pid, &status, 0);
+	wait(&status);
 
 	return (0);
 }
