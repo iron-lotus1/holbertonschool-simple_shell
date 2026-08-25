@@ -1,1 +1,79 @@
-# Manual
+# Manual page
+
+.TH SIMPLE_SHELL 1 "August 2026" "Holberton School" "User Commands"
+
+.SH NAME
+simple_shell \- simple UNIX command-line interpreter
+
+.SH SYNOPSIS
+.B ./hsh
+
+.SH DESCRIPTION
+.B simple_shell
+is a simple UNIX command-line interpreter written in C.
+
+The shell displays a prompt, reads commands from standard input, executes the commands, and displays the prompt again.
+
+.SH INVOCATION
+The shell is started by running:
+
+.PP
+.nf
+$ ./hsh
+.fi
+
+.SH COMMAND EXECUTION
+The shell reads a command from standard input and attempts to execute it.
+
+The shell uses the PATH environment variable to locate executable commands.
+
+If the command cannot be found, an error message is displayed and the shell returns to the prompt.
+
+.SH INTERACTIVE MODE
+In interactive mode, the shell displays a prompt and waits for the user to enter a command.
+
+.PP
+.nf
+$ ./hsh
+$ ls
+$ pwd
+$ whoami
+.fi
+
+.SH NON-INTERACTIVE MODE
+The shell can read commands from standard input.
+
+For example:
+
+.PP
+.nf
+$ echo "ls" | ./hsh
+.fi
+
+.SH ENVIRONMENT
+The shell inherits environment variables from its parent process.
+
+The PATH environment variable is used to search for executable commands.
+
+.SH END OF FILE
+The shell handles the end-of-file condition.
+
+Pressing Ctrl-D terminates an interactive session.
+
+.SH ERRORS
+If a command cannot be found or executed, the shell displays an appropriate error message.
+
+.SH EXAMPLES
+.PP
+.nf
+$ ./hsh
+$ ls
+$ pwd
+$ whoami
+.fi
+
+.SH BUGS
+This shell is a simple implementation and does not provide all the features of shells such as bash.
+
+.SH AUTHORS
+See the AUTHORS file in the project repository for a list of contributors.
