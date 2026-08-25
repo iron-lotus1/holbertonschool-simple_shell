@@ -8,6 +8,7 @@
 int main(void)
 {
 	char *line = NULL;
+	char *argv[2];
 	size_t len = 0;
 	ssize_t read;
 	pid_t pid;
@@ -33,6 +34,9 @@ int main(void)
 		if (line[0] == '\0')
 			continue;
 
+		argv[0] = line;
+		argv[1] = NULL;
+
 		pid = fork();
 
 		if (pid == -1)
@@ -43,7 +47,7 @@ int main(void)
 
 		if (pid == 0)
 		{
-			if (execve(line, (char *[]) {line, NULL}, NULL) == -1)
+			if (execve(line, argv, NULL) == -1)
 			{
 				perror("./hsh");
 				exit(127);
