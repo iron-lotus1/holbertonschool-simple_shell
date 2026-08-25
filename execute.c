@@ -32,7 +32,7 @@ int execute_command(char *command)
 		}
 	}
 
-	wait(&status);
+	waitpid(pid, &status, 0);
 
 	return (0);
 }
