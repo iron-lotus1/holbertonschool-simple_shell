@@ -1,66 +1,55 @@
-#include "shell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
-/**
- * trim_spaces - Removes leading and trailing spaces
- * @str: String to trim
- *
- * Return: Pointer to trimmed string
- */
-char *trim_spaces(char *str)
-{
-	char *end;
-
-	while (*str == ' ' || *str == '\t')
-		str++;
-
-	if (*str == '\0')
-		return (str);
-
-	end = str + strlen(str) - 1;
-
-	while (end > str && (*end == ' ' || *end == '\t'))
-		end--;
-
-	*(end + 1) = '\0';
-
-	return (str);
-}
-
-/**
- * main - Entry point for the simple shell
- *
- * Return: 0 on success
- */
 int main(void)
 {
 	char *line = NULL;
-	char *command;
 	size_t len = 0;
-	ssize_t nread;
+	ssize_t read;
+	pid_t pid;
+	char *argv[2];
 
 	while (1)
 	{
-		if (isatty(STDIN_FILENO))
-			printf("$ ");
+		printf("#cisfun$ ");
+		fflush(stdout);
 
-		nread = getline(&line, &len, stdin);
+		read = getline(&line, &len, stdin);
 
-		if (nread == -1)
+		if (read == -1)
 		{
-			if (isatty(STDIN_FILENO))
-				printf("\n");
-			break;
+			free(line);
+			return (0);
 		}
 
-		command = trim_spaces(line);
+		if (line[read - 1] == '\n')
+			line[read - 1] = '\0';
 
-		if (*command == '\0')
+		if (line[0] == '\0')
 			continue;
 
-		if (handle_builtin(command))
-			continue;
+		argv[0] = line;
+		argv[1] = NULL;
 
-		execute_command(command);
+		pid = fork();
+
+		if (pid == -1)
+		{
+			perror("./shell");
+			continue;
+		}
+
+		if (pid == 0)
+		{
+			execve(argv[0], argv, NULL);
+			perror("./shell");
+			exit(127);
+		}
+
+		waitpid(pid, NULL, 0);
 	}
 
 	free(line);
