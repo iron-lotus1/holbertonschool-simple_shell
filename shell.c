@@ -3,35 +3,27 @@
 /**
  * main - Entry point for the simple shell
  *
- * Return: 0 on success
+ * Return: Always 0
  */
 int main(void)
 {
 	char *line = NULL;
 	size_t len = 0;
-	ssize_t nread;
 
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
 			printf("$ ");
 
-		nread = getline(&line, &len, stdin);
-
-		if (nread == -1)
+		if (getline(&line, &len, stdin) == -1)
 		{
-			if (isatty(STDIN_FILENO))
-				printf("\n");
-			break;
+			free(line);
+			return (0);
 		}
 
-		if (nread > 0 && line[nread - 1] == '\n')
-			line[nread - 1] = '\0';
+		line[strcspn(line, "\n")] = '\0';
 
 		if (line[0] == '\0')
-			continue;
-
-		if (handle_builtin(line))
 			continue;
 
 		execute_command(line);
