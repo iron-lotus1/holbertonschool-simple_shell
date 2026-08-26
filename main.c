@@ -1,27 +1,42 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "shell.h"
-/*
+
+/**
+ * main - Entry point of the simple shell.
+ * @ac: Number of command-line arguments.
+ * @av: Array of command-line arguments.
+ * @env: Array of environment variables.
  *
- *
+ * Return: Always 0.
  */
-
-int main(int ac, char **argv)
+int main(int ac, char **av, char **env)
 {
-    char *prompt = "($) ";
-    char *lineptr;
-    size_t n = 0;
+	char *line;
+	char **args;
+	int num_tokens;
 
-    (void)ac;
-    (void)argv;
+	(void)ac;
+	(void)av;
 
-    while (1)
-    {
-        printf("%s", prompt);
-        getline(&lineptr, &n, stdin);
-        printf("%s\n", lineptr);
+	while (1)
+	{
+		if (isatty(STDIN_FILENO))
+			printf(":) ");
 
-        free(lineptr);
-    }
-    return (0);
+		line = user_input();
+		if (line == NULL)
+		{
+			if (isatty(STDIN_FILENO))
+				printf("\n");
+			break;
+		}
+
+		args = token(line, &num_tokens);
+		if (args != NULL)
+			process_command(args, env);
+
+		free_args(args);
+		free(line);
+	}
+
+	return (0);
 }
