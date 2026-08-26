@@ -60,7 +60,9 @@ int tokenize(char *command, char *argv[])
 		while (*command != '\0' &&
 		       *command != ' ' &&
 		       *command != '\t')
+		{
 			command++;
+		}
 
 		if (*command != '\0')
 		{
@@ -81,25 +83,40 @@ int tokenize(char *command, char *argv[])
 }
 
 /**
- * get_path - Gets the PATH environment variable.
+ * get_path - Finds PATH in the environment.
+ * @envp: Environment variables.
  *
- * Return: Pointer to PATH or NULL.
+ * Return: Value of PATH or NULL.
  */
-char *get_path(void)
+char *get_path(char **envp)
 {
-	char *path;
+	int i;
 
-	path = getenv("PATH");
+	i = 0;
 
-	return (path);
+	while (envp[i] != NULL)
+	{
+		if (envp[i][0] == 'P' &&
+		    envp[i][1] == 'A' &&
+		    envp[i][2] == 'T' &&
+		    envp[i][3] == 'H' &&
+		    envp[i][4] == '=')
+		{
+			return (envp[i] + 5);
+		}
+
+		i++;
+	}
+
+	return (NULL);
 }
 
 /**
- * build_path - Creates a possible path for a command.
+ * build_path - Builds a complete path.
  * @directory: Directory from PATH.
  * @command: Command name.
  *
- * Return: Allocated full path or NULL.
+ * Return: Allocated full path.
  */
 char *build_path(char *directory, char *command)
 {
@@ -121,12 +138,13 @@ char *build_path(char *directory, char *command)
 }
 
 /**
- * find_command - Searches PATH for an executable.
+ * find_command - Searches PATH for a command.
  * @command: Command to find.
+ * @envp: Environment variables.
  *
- * Return: Full path to executable or NULL.
+ * Return: Full path or NULL.
  */
-char *find_command(char *command)
+char *find_command(char *command, char **envp)
 {
 	char *path;
 	char *path_copy;
@@ -144,7 +162,7 @@ char *find_command(char *command)
 		return (NULL);
 	}
 
-	path = get_path();
+	path = get_path(envp);
 
 	if (path == NULL)
 		return (NULL);
@@ -181,19 +199,25 @@ char *find_command(char *command)
 
 /**
  * main - Entry point for the simple shell.
+ * @argc: Argument count.
+ * @argv: Argument vector.
+ * @envp: Environment variables.
  *
  * Return: Always 0.
  */
-int main(void)
+int main(int argc, char **argv, char **envp)
 {
 	char *line = NULL;
 	char *command_path;
-	char *argv[64];
 	char *command;
+	char *args[64];
 	size_t len;
 	ssize_t read;
 	pid_t pid;
 	int status;
+
+	(void)argc;
+	(void)argv;
 
 	len = 0;
 
@@ -220,13 +244,16 @@ int main(void)
 		if (command[0] == '\0')
 			continue;
 
-		tokenize(command, argv);
+		tokenize(command, args);
 
-		command_path = find_command(argv[0]);
+		command_path = find_command(args[0], envp);
 
+		/*
+		 * Do not fork if command does not exist.
+		 */
 		if (command_path == NULL)
 		{
-			fprintf(stderr, "./hsh: %s: not found\n", argv[0]);
+			fprintf(stderr, "./hsh: %s: not found\n", args[0]);
 			continue;
 		}
 
@@ -241,7 +268,7 @@ int main(void)
 
 		if (pid == 0)
 		{
-			if (execve(command_path, argv, NULL) == -1)
+			if (execve(command_path, args, envp) == -1)
 			{
 				perror("./hsh");
 				free(command_path);
