@@ -34,9 +34,9 @@ char *trim_command(char *command)
 }
 
 /**
- * tokenize - Splits a command line into arguments.
- * @command: Command line.
- * @argv: Array to store the arguments.
+ * tokenize - Splits a command into arguments.
+ * @command: Command to split.
+ * @argv: Array to store arguments.
  *
  * Return: Number of arguments.
  */
@@ -60,9 +60,7 @@ int tokenize(char *command, char *argv[])
 		while (*command != '\0' &&
 		       *command != ' ' &&
 		       *command != '\t')
-		{
 			command++;
-		}
 
 		if (*command != '\0')
 		{
@@ -83,6 +81,105 @@ int tokenize(char *command, char *argv[])
 }
 
 /**
+ * get_path - Gets the PATH environment variable.
+ *
+ * Return: Pointer to PATH or NULL.
+ */
+char *get_path(void)
+{
+	char *path;
+
+	path = getenv("PATH");
+
+	return (path);
+}
+
+/**
+ * build_path - Creates a possible path for a command.
+ * @directory: Directory from PATH.
+ * @command: Command name.
+ *
+ * Return: Allocated full path or NULL.
+ */
+char *build_path(char *directory, char *command)
+{
+	char *full_path;
+	int length;
+
+	length = strlen(directory) + strlen(command) + 2;
+
+	full_path = malloc(length);
+
+	if (full_path == NULL)
+		return (NULL);
+
+	strcpy(full_path, directory);
+	strcat(full_path, "/");
+	strcat(full_path, command);
+
+	return (full_path);
+}
+
+/**
+ * find_command - Searches PATH for an executable.
+ * @command: Command to find.
+ *
+ * Return: Full path to executable or NULL.
+ */
+char *find_command(char *command)
+{
+	char *path;
+	char *path_copy;
+	char *directory;
+	char *full_path;
+
+	if (command == NULL)
+		return (NULL);
+
+	if (strchr(command, '/') != NULL)
+	{
+		if (access(command, X_OK) == 0)
+			return (strdup(command));
+
+		return (NULL);
+	}
+
+	path = get_path();
+
+	if (path == NULL)
+		return (NULL);
+
+	path_copy = strdup(path);
+
+	if (path_copy == NULL)
+		return (NULL);
+
+	directory = strtok(path_copy, ":");
+
+	while (directory != NULL)
+	{
+		full_path = build_path(directory, command);
+
+		if (full_path != NULL)
+		{
+			if (access(full_path, X_OK) == 0)
+			{
+				free(path_copy);
+				return (full_path);
+			}
+
+			free(full_path);
+		}
+
+		directory = strtok(NULL, ":");
+	}
+
+	free(path_copy);
+
+	return (NULL);
+}
+
+/**
  * main - Entry point for the simple shell.
  *
  * Return: Always 0.
@@ -90,8 +187,9 @@ int tokenize(char *command, char *argv[])
 int main(void)
 {
 	char *line = NULL;
-	char *command;
+	char *command_path;
 	char *argv[64];
+	char *command;
 	size_t len;
 	ssize_t read;
 	pid_t pid;
@@ -124,19 +222,29 @@ int main(void)
 
 		tokenize(command, argv);
 
+		command_path = find_command(argv[0]);
+
+		if (command_path == NULL)
+		{
+			fprintf(stderr, "./hsh: %s: not found\n", argv[0]);
+			continue;
+		}
+
 		pid = fork();
 
 		if (pid == -1)
 		{
 			perror("./hsh");
+			free(command_path);
 			continue;
 		}
 
 		if (pid == 0)
 		{
-			if (execve(argv[0], argv, NULL) == -1)
+			if (execve(command_path, argv, NULL) == -1)
 			{
 				perror("./hsh");
+				free(command_path);
 				exit(127);
 			}
 		}
@@ -144,6 +252,8 @@ int main(void)
 		{
 			waitpid(pid, &status, 0);
 		}
+
+		free(command_path);
 	}
 
 	free(line);
