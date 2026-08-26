@@ -248,20 +248,24 @@ int main(int argc, char **argv, char **envp)
 
 		tokenize(command, args);
 
-		/*
-		 * Handle the exit built-in.
-		 */
+		/* Handle exit built-in. */
 		if (strcmp(args[0], "exit") == 0)
 		{
 			free(line);
 			exit(last_status);
 		}
 
+		/* Handle env built-in. */
+		if (strcmp(args[0], "env") == 0)
+		{
+			print_environment(envp);
+			last_status = 0;
+			continue;
+		}
+
 		command_path = find_command(args[0], envp);
 
-		/*
-		 * Do not fork if command does not exist.
-		 */
+		/* Do not fork if command does not exist. */
 		if (command_path == NULL)
 		{
 			fprintf(stderr, "./hsh: %d: %s: not found\n",
