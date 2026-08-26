@@ -248,16 +248,25 @@ int main(int argc, char **argv, char **envp)
 
 		tokenize(command, args);
 
+		/*
+		 * Handle the exit built-in.
+		 */
+		if (strcmp(args[0], "exit") == 0)
+		{
+			free(line);
+			exit(last_status);
+		}
+
 		command_path = find_command(args[0], envp);
 
 		/*
-		 * Command does not exist.
-		 * Do NOT call fork().
+		 * Do not fork if command does not exist.
 		 */
 		if (command_path == NULL)
 		{
 			fprintf(stderr, "./hsh: %d: %s: not found\n",
 				line_number, args[0]);
+
 			last_status = 127;
 			continue;
 		}
