@@ -1,7 +1,6 @@
 #include "shell.h"
 
 /**
-<<<<<<< HEAD
  * main - Entry point of the simple shell.
  * @ac: Number of command-line arguments.
  * @av: Array of command-line arguments.
