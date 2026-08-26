@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * trim_command - Removes leading and trailing spaces.
+ * trim_command - Removes leading and trailing whitespace.
  * @command: Command to trim.
  *
  * Return: Pointer to the trimmed command.
@@ -34,11 +34,11 @@ char *trim_command(char *command)
 }
 
 /**
- * tokenize - Splits a command into words.
- * @command: Command to split.
- * @argv: Array that stores the words.
+ * tokenize - Splits a command line into arguments.
+ * @command: Command line.
+ * @argv: Array to store the arguments.
  *
- * Return: Number of words.
+ * Return: Number of arguments.
  */
 int tokenize(char *command, char *argv[])
 {
@@ -46,14 +46,11 @@ int tokenize(char *command, char *argv[])
 	char *start;
 
 	count = 0;
-	start = NULL;
 
 	while (*command != '\0')
 	{
 		while (*command == ' ' || *command == '\t')
-		{
 			command++;
-		}
 
 		if (*command == '\0')
 			break;
