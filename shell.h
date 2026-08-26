@@ -13,5 +13,6 @@ int tokenize(char *command, char *argv[]);
 char *get_path(char **envp);
 char *build_path(char *directory, char *command);
 char *find_command(char *command, char **envp);
+void print_environment(char **envp);
 
 #endif
