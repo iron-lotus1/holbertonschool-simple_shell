@@ -21,7 +21,8 @@ char *trim_command(char *command)
 	while (*end != '\0')
 		end++;
 
-	end--;
+	if (end != start)
+		end--;
 
 	while (end >= start && (*end == ' ' || *end == '\t'))
 	{
@@ -41,11 +42,13 @@ int main(void)
 {
 	char *line = NULL;
 	char *command;
-	char *argv[2];
+	char *argv[64];
+	char *token;
 	size_t len = 0;
 	ssize_t read;
 	pid_t pid;
 	int status;
+	int argc;
 
 	while (1)
 	{
@@ -70,8 +73,17 @@ int main(void)
 		if (command[0] == '\0')
 			continue;
 
-		argv[0] = command;
-		argv[1] = NULL;
+		argc = 0;
+		token = strtok(command, " \t");
+
+		while (token != NULL && argc < 63)
+		{
+			argv[argc] = token;
+			argc++;
+			token = strtok(NULL, " \t");
+		}
+
+		argv[argc] = NULL;
 
 		pid = fork();
 
@@ -83,7 +95,7 @@ int main(void)
 
 		if (pid == 0)
 		{
-			if (execve(command, argv, NULL) == -1)
+			if (execve(argv[0], argv, NULL) == -1)
 			{
 				perror("./hsh");
 				exit(127);
