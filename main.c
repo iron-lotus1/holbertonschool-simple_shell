@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * trim_command - Removes leading and trailing spaces from a command.
+ * trim_command - Removes leading and trailing spaces.
  * @command: Command to trim.
  *
  * Return: Pointer to the trimmed command.
@@ -34,6 +34,58 @@ char *trim_command(char *command)
 }
 
 /**
+ * tokenize - Splits a command into words.
+ * @command: Command to split.
+ * @argv: Array that stores the words.
+ *
+ * Return: Number of words.
+ */
+int tokenize(char *command, char *argv[])
+{
+	int count;
+	char *start;
+
+	count = 0;
+	start = NULL;
+
+	while (*command != '\0')
+	{
+		while (*command == ' ' || *command == '\t')
+		{
+			command++;
+		}
+
+		if (*command == '\0')
+			break;
+
+		start = command;
+
+		while (*command != '\0' &&
+		       *command != ' ' &&
+		       *command != '\t')
+		{
+			command++;
+		}
+
+		if (*command != '\0')
+		{
+			*command = '\0';
+			command++;
+		}
+
+		argv[count] = start;
+		count++;
+
+		if (count >= 63)
+			break;
+	}
+
+	argv[count] = NULL;
+
+	return (count);
+}
+
+/**
  * main - Entry point for the simple shell.
  *
  * Return: Always 0.
@@ -43,12 +95,12 @@ int main(void)
 	char *line = NULL;
 	char *command;
 	char *argv[64];
-	char *token;
-	size_t len = 0;
+	size_t len;
 	ssize_t read;
 	pid_t pid;
 	int status;
-	int argc;
+
+	len = 0;
 
 	while (1)
 	{
@@ -73,17 +125,7 @@ int main(void)
 		if (command[0] == '\0')
 			continue;
 
-		argc = 0;
-		token = strtok(command, " \t");
-
-		while (token != NULL && argc < 63)
-		{
-			argv[argc] = token;
-			argc++;
-			token = strtok(NULL, " \t");
-		}
-
-		argv[argc] = NULL;
+		tokenize(command, argv);
 
 		pid = fork();
 
