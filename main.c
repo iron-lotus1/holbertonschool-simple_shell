@@ -60,9 +60,7 @@ int tokenize(char *command, char *argv[])
 		while (*command != '\0' &&
 		       *command != ' ' &&
 		       *command != '\t')
-		{
 			command++;
-		}
 
 		if (*command != '\0')
 		{
@@ -86,7 +84,7 @@ int tokenize(char *command, char *argv[])
  * get_path - Finds PATH in the environment.
  * @envp: Environment variables.
  *
- * Return: Value of PATH or NULL.
+ * Return: PATH value or NULL.
  */
 char *get_path(char **envp)
 {
@@ -101,9 +99,7 @@ char *get_path(char **envp)
 		    envp[i][2] == 'T' &&
 		    envp[i][3] == 'H' &&
 		    envp[i][4] == '=')
-		{
 			return (envp[i] + 5);
-		}
 
 		i++;
 	}
@@ -164,7 +160,7 @@ char *find_command(char *command, char **envp)
 
 	path = get_path(envp);
 
-	if (path == NULL)
+	if (path == NULL || path[0] == '\0')
 		return (NULL);
 
 	path_copy = strdup(path);
@@ -203,7 +199,7 @@ char *find_command(char *command, char **envp)
  * @argv: Argument vector.
  * @envp: Environment variables.
  *
- * Return: Always 0.
+ * Return: Exit status.
  */
 int main(int argc, char **argv, char **envp)
 {
@@ -215,11 +211,15 @@ int main(int argc, char **argv, char **envp)
 	ssize_t read;
 	pid_t pid;
 	int status;
+	int line_number;
+	int last_status;
 
 	(void)argc;
 	(void)argv;
 
 	len = 0;
+	line_number = 0;
+	last_status = 0;
 
 	while (1)
 	{
@@ -236,6 +236,8 @@ int main(int argc, char **argv, char **envp)
 			break;
 		}
 
+		line_number++;
+
 		if (read > 0 && line[read - 1] == '\n')
 			line[read - 1] = '\0';
 
@@ -249,11 +251,14 @@ int main(int argc, char **argv, char **envp)
 		command_path = find_command(args[0], envp);
 
 		/*
-		 * Do not fork if command does not exist.
+		 * Command does not exist.
+		 * Do NOT call fork().
 		 */
 		if (command_path == NULL)
 		{
-			fprintf(stderr, "./hsh: %s: not found\n", args[0]);
+			fprintf(stderr, "./hsh: %d: %s: not found\n",
+				line_number, args[0]);
+			last_status = 127;
 			continue;
 		}
 
@@ -263,6 +268,7 @@ int main(int argc, char **argv, char **envp)
 		{
 			perror("./hsh");
 			free(command_path);
+			last_status = 1;
 			continue;
 		}
 
@@ -278,6 +284,11 @@ int main(int argc, char **argv, char **envp)
 		else
 		{
 			waitpid(pid, &status, 0);
+
+			if (WIFEXITED(status))
+				last_status = WEXITSTATUS(status);
+			else
+				last_status = 1;
 		}
 
 		free(command_path);
@@ -285,5 +296,5 @@ int main(int argc, char **argv, char **envp)
 
 	free(line);
 
-	return (0);
+	return (last_status);
 }
