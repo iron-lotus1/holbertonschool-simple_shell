@@ -22,7 +22,6 @@ int count_tokens(char *line)
 	strcpy(copy, line);
 
 	word = strtok(copy, " \t\n");
-
 	while (word != NULL)
 	{
 		count++;
@@ -30,14 +29,13 @@ int count_tokens(char *line)
 	}
 
 	free(copy);
-
 	return (count);
 }
 
 /**
  * fill_args - Copies tokens into an argument array.
  * @line: Command line.
- * @args: Argument array.
+ * @args: Argument array (already allocated).
  *
  * Return: 0 on success, -1 on failure.
  */
@@ -54,37 +52,37 @@ int fill_args(char *line, char **args)
 	strcpy(copy, line);
 
 	word = strtok(copy, " \t\n");
-
 	while (word != NULL)
 	{
 		args[i] = malloc(strlen(word) + 1);
-
 		if (args[i] == NULL)
 		{
+			/* Free only the tokens we successfully allocated */
+			while (i > 0)
+			{
+				i--;
+				free(args[i]);
+			}
 			free(copy);
-			free_args(args);
 			return (-1);
 		}
 
 		strcpy(args[i], word);
-
 		i++;
 		word = strtok(NULL, " \t\n");
 	}
 
-	args[i] = NULL;
-
+	args[i] = NULL; /* Always NULL-terminate */
 	free(copy);
-
 	return (0);
 }
 
 /**
  * token - Splits a command line into arguments.
  * @line: Command line.
- * @num_tokens: Number of arguments including NULL.
+ * @num_tokens: Pointer to store number of arguments (including NULL).
  *
- * Return: Array of arguments, or NULL.
+ * Return: Array of arguments, or NULL on failure.
  */
 char **token(char *line, int *num_tokens)
 {
@@ -95,13 +93,13 @@ char **token(char *line, int *num_tokens)
 		return (NULL);
 
 	count = count_tokens(line);
-
 	*num_tokens = count + 1;
 
 	args = malloc(sizeof(char *) * (*num_tokens));
-
 	if (args == NULL)
 		return (NULL);
+
+	args[0] = NULL;
 
 	if (fill_args(line, args) == -1)
 	{
