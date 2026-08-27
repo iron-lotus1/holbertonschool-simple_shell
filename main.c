@@ -11,7 +11,7 @@ int main(int ac, char **av)
 {
 	char *line;
 	char **args;
-	int num_tokens;
+	int num_tokens = 0;
 	int line_number = 0;
 
 	(void)ac;
