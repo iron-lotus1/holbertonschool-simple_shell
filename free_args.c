@@ -3,8 +3,6 @@
 /**
  * free_args - Frees an argument array.
  * @args: Argument array.
- *
- * Return: Nothing.
  */
 void free_args(char **args)
 {
@@ -13,13 +11,8 @@ void free_args(char **args)
 	if (args == NULL)
 		return;
 
-	i = 0;
-
-	while (args[i] != NULL)
-	{
+	for (i = 0; args[i] != NULL; i++)
 		free(args[i]);
-		i++;
-	}
 
 	free(args);
 }
