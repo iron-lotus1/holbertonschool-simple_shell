@@ -21,12 +21,12 @@ int count_tokens(char *line)
 
 	strcpy(copy, line);
 
-	word = strtok(copy, " \n");
+	word = strtok(copy, " \t\n");
 
 	while (word != NULL)
 	{
 		count++;
-		word = strtok(NULL, " \n");
+		word = strtok(NULL, " \t\n");
 	}
 
 	free(copy);
@@ -53,7 +53,7 @@ int fill_args(char *line, char **args)
 
 	strcpy(copy, line);
 
-	word = strtok(copy, " \n");
+	word = strtok(copy, " \t\n");
 
 	while (word != NULL)
 	{
@@ -69,7 +69,7 @@ int fill_args(char *line, char **args)
 		strcpy(args[i], word);
 
 		i++;
-		word = strtok(NULL, " \n");
+		word = strtok(NULL, " \t\n");
 	}
 
 	args[i] = NULL;
