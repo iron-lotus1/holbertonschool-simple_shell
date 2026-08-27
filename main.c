@@ -2,20 +2,14 @@
 
 /**
  * main - Entry point of the simple shell.
- * @ac: Number of command-line arguments.
- * @av: Array of command-line arguments.
- * @env: Array of environment variables.
  *
  * Return: Always 0.
  */
-int main(int ac, char **av, char **env)
+int main(void)
 {
 	char *line;
 	char **args;
 	int num_tokens;
-
-	(void)ac;
-	(void)av;
 
 	while (1)
 	{
@@ -23,6 +17,7 @@ int main(int ac, char **av, char **env)
 			printf(":) ");
 
 		line = user_input();
+
 		if (line == NULL)
 		{
 			if (isatty(STDIN_FILENO))
@@ -31,8 +26,9 @@ int main(int ac, char **av, char **env)
 		}
 
 		args = token(line, &num_tokens);
-		if (args != NULL)
-			process_command(args, env);
+
+		if (args != NULL && args[0] != NULL)
+			process_command(args, environ);
 
 		free_args(args);
 		free(line);
