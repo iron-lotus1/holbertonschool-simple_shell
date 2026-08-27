@@ -20,7 +20,7 @@ char **token(char *line, int *num_tokens);
 
 /* process.c */
 void process_command(char **args, char **env,
-		     char *program, int line_number);
+char *program, int line_number);
 
 /* builtins.c */
 int is_builtin(char **args);
@@ -44,6 +44,7 @@ char *find_command(char *command, char **env);
 /* path_utils.c */
 char *build_path(char *directory, char *command);
 char *check_command(char *command);
+char *search_path(char *path, char *command);
 
 /* free_args.c */
 void free_args(char **args);
