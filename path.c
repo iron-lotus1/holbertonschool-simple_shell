@@ -33,7 +33,6 @@ char *find_command(char *command, char **env)
 {
 	char *path;
 	char *path_copy;
-	char *directory;
 	char *full_path;
 
 	if (command == NULL)
@@ -53,22 +52,9 @@ char *find_command(char *command, char **env)
 
 	strcpy(path_copy, path);
 
-	directory = strtok(path_copy, ":");
-
-	while (directory != NULL)
-	{
-		full_path = build_path(directory, command);
-
-		if (full_path != NULL)
-		{
-			free(path_copy);
-			return (full_path);
-		}
-
-		directory = strtok(NULL, ":");
-	}
+	full_path = search_path(path_copy, command);
 
 	free(path_copy);
 
-	return (NULL);
+	return (full_path);
 }
