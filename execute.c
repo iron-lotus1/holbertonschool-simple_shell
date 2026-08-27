@@ -4,15 +4,12 @@
  * execute - Executes an external command.
  * @args: Command and arguments.
  * @env: Environment variables.
- *
- * Return: Nothing.
  */
 void execute(char **args, char **env)
 {
 	char *command;
 
-	command = get_command(args[0], env);
-
+	command = find_command(args[0], env);
 	if (command == NULL)
 	{
 		fprintf(stderr, "%s: not found\n", args[0]);
@@ -20,9 +17,7 @@ void execute(char **args, char **env)
 	}
 
 	run_command(command, args, env);
-
-	if (command != args[0])
-		free(command);
+	free(command);
 }
 
 /**
@@ -46,12 +41,10 @@ char *get_command(char *command, char **env)
 }
 
 /**
- * run_command - Forks and executes a command.
- * @command: Command path.
+ * run_command - Creates a process and executes a command.
+ * @command: Full path to the command.
  * @args: Command arguments.
  * @env: Environment variables.
- *
- * Return: Nothing.
  */
 void run_command(char *command, char **args, char **env)
 {
@@ -59,7 +52,6 @@ void run_command(char *command, char **args, char **env)
 	int status;
 
 	pid = fork();
-
 	if (pid == -1)
 	{
 		perror("fork");
