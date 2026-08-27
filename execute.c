@@ -2,56 +2,50 @@
 
 /**
  * execute - Executes an external command.
- * @args: Command and arguments.
+ * @args: Command arguments.
  * @env: Environment variables.
+ * @program: Name of the shell.
+ * @line_number: Current command line number.
+ *
+ * Return: Nothing.
  */
-void execute(char **args, char **env)
+void execute(char **args, char **env,
+	     char *program, int line_number)
 {
 	char *command;
 
 	command = find_command(args[0], env);
+
 	if (command == NULL)
 	{
-		fprintf(stderr, "%s: not found\n", args[0]);
+		fprintf(stderr, "%s: %d: %s: not found\n",
+			program, line_number, args[0]);
 		return;
 	}
 
-	run_command(command, args, env);
+	run_command(command, args, env, program, line_number);
+
 	free(command);
 }
 
 /**
- * get_command - Finds the command to execute.
- * @command: Command name.
- * @env: Environment variables.
- *
- * Return: Command path, or NULL.
- */
-char *get_command(char *command, char **env)
-{
-	if (strchr(command, '/') != NULL)
-	{
-		if (access(command, X_OK) == 0)
-			return (command);
-
-		return (NULL);
-	}
-
-	return (find_command(command, env));
-}
-
-/**
- * run_command - Creates a process and executes a command.
- * @command: Full path to the command.
+ * run_command - Creates a child and executes a command.
+ * @command: Full path to command.
  * @args: Command arguments.
  * @env: Environment variables.
+ * @program: Name of the shell.
+ * @line_number: Current command line number.
+ *
+ * Return: Nothing.
  */
-void run_command(char *command, char **args, char **env)
+void run_command(char *command, char **args, char **env,
+		 char *program, int line_number)
 {
 	pid_t pid;
 	int status;
 
 	pid = fork();
+
 	if (pid == -1)
 	{
 		perror("fork");
@@ -61,7 +55,10 @@ void run_command(char *command, char **args, char **env)
 	if (pid == 0)
 	{
 		execve(command, args, env);
-		perror(args[0]);
+
+		fprintf(stderr, "%s: %d: %s: execution failed\n",
+			program, line_number, args[0]);
+
 		_exit(127);
 	}
 

@@ -1,14 +1,17 @@
 #include "shell.h"
 
 /**
- * get_path - Finds PATH in the environment.
+ * get_path - Gets the PATH variable from the environment.
  * @env: Environment variables.
  *
- * Return: PATH value, or NULL.
+ * Return: Pointer to PATH value, or NULL.
  */
 char *get_path(char **env)
 {
 	int i;
+
+	if (env == NULL)
+		return (NULL);
 
 	for (i = 0; env[i] != NULL; i++)
 	{
@@ -20,80 +23,52 @@ char *get_path(char **env)
 }
 
 /**
- * build_path - Creates a full command path.
- * @directory: PATH directory.
+ * find_command - Finds the full path of a command.
  * @command: Command name.
+ * @env: Environment variables.
  *
- * Return: Full path, or NULL.
+ * Return: Full command path, or NULL.
  */
-char *build_path(char *directory, char *command)
+char *find_command(char *command, char **env)
 {
-	char *full_path;
-
-	full_path = malloc(strlen(directory) + strlen(command) + 2);
-	if (full_path == NULL)
-		return (NULL);
-
-	strcpy(full_path, directory);
-	strcat(full_path, "/");
-	strcat(full_path, command);
-
-	return (full_path);
-}
-
-/**
- * search_path - Searches PATH for a command.
- * @path: PATH value.
- * @command: Command name.
- *
- * Return: Full path, or NULL.
- */
-char *search_path(char *path, char *command)
-{
-	char *copy;
+	char *path;
+	char *path_copy;
 	char *directory;
 	char *full_path;
 
-	copy = malloc(strlen(path) + 1);
-	if (copy == NULL)
+	if (command == NULL)
 		return (NULL);
 
-	strcpy(copy, path);
-	directory = strtok(copy, ":");
+	full_path = check_command(command);
+	if (full_path != NULL)
+		return (full_path);
+
+	path = get_path(env);
+	if (path == NULL)
+		return (NULL);
+
+	path_copy = malloc(strlen(path) + 1);
+	if (path_copy == NULL)
+		return (NULL);
+
+	strcpy(path_copy, path);
+
+	directory = strtok(path_copy, ":");
 
 	while (directory != NULL)
 	{
 		full_path = build_path(directory, command);
 
-		if (full_path != NULL && access(full_path, X_OK) == 0)
+		if (full_path != NULL)
 		{
-			free(copy);
+			free(path_copy);
 			return (full_path);
 		}
 
-		free(full_path);
 		directory = strtok(NULL, ":");
 	}
 
-	free(copy);
+	free(path_copy);
+
 	return (NULL);
-}
-
-/**
- * find_command - Finds a command in PATH.
- * @command: Command name.
- * @env: Environment variables.
- *
- * Return: Full path, or NULL.
- */
-char *find_command(char *command, char **env)
-{
-	char *path;
-
-	path = get_path(env);
-
-	if (path == NULL)
-		return (NULL);
-
-	return (search_path(path, command));
 }
