@@ -43,7 +43,7 @@ char *check_command(char *command)
 	if (strchr(command, '/') == NULL)
 		return (NULL);
 
-	if (access(command, X_OK) != 0)
+	if (access(command, F_OK) != 0)
 		return (NULL);
 
 	full_path = malloc(strlen(command) + 1);
@@ -53,4 +53,31 @@ char *check_command(char *command)
 	strcpy(full_path, command);
 
 	return (full_path);
+}
+
+/**
+ * search_path - Searches directories in PATH for a command.
+ * @path: PATH string.
+ * @command: Command name.
+ *
+ * Return: Full command path, or NULL.
+ */
+char *search_path(char *path, char *command)
+{
+	char *directory;
+	char *full_path;
+
+	directory = strtok(path, ":");
+
+	while (directory != NULL)
+	{
+		full_path = build_path(directory, command);
+
+		if (full_path != NULL)
+			return (full_path);
+
+		directory = strtok(NULL, ":");
+	}
+
+	return (NULL);
 }
