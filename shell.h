@@ -9,12 +9,12 @@
 #include <sys/wait.h>
 
 
-/* input.c */
+/* prompt.c */
 char *read_command(void);
 
 /* token.c */
-int tokenize(char *command, char *argv[]);
 char *trim_command(char *command);
+int tokenize(char *command, char *args[]);
 
 /* builtins.c */
 int handle_builtin(char **args, char **envp, int status);
@@ -27,6 +27,12 @@ void print_environment(char **envp);
 
 /* execute.c */
 int execute_command(char **args, char **envp, char *command_path);
+
+/* fork.c */
+int create_process(char **args, char **envp, char *command_path);
+
+/* wait.c */
+int wait_for_process(pid_t pid);
 
 /* path.c */
 char *get_path(char **envp);
