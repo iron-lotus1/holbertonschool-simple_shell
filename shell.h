@@ -20,7 +20,8 @@ int tokenize(char *command, char *args[]);
 int handle_builtin(char **args, char **envp, int status);
 
 /* process.c */
-int process_command(char **args, char **envp, int status, int line_number, char *line);
+int process_command(char **args, char **envp, int status,
+		int line_number, char *line);
 
 /* env.c */
 void print_environment(char **envp);

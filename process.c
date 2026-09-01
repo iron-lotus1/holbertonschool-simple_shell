@@ -8,7 +8,8 @@
  *
  * Return: New exit status.
  */
-int process_command(char **args, char **envp, int status, int line_number, char *line)
+int process_command(char **args, char **envp, int status,
+		int line_number, char *line)
 {
 	char *command_path;
 	int builtin_status;
