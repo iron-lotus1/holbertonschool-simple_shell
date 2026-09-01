@@ -8,10 +8,16 @@
  *
  * Return: New exit status.
  */
-int process_command(char **args, char **envp, int status, int line_number)
+int process_command(char **args, char **envp, int status, int line_number, char *line)
 {
 	char *command_path;
 	int builtin_status;
+
+	if (strcmp(args[0], "exit") == 0)
+	{
+		free(line);
+		exit(status);
+	}
 
 	builtin_status = handle_builtin(args, envp, status);
 

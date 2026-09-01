@@ -42,7 +42,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		tokenize(command, args);
-		status = process_command(args, envp, status, line_number);
+		status = process_command(args, envp, status, line_number, line);
 
 		free(line);
 		line = NULL;
