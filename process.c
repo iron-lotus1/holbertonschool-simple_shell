@@ -5,6 +5,8 @@
  * @args: Command arguments.
  * @envp: Environment variables.
  * @status: Previous exit status.
+ * @line_number: Current cmd line number
+ * @line: input cmd line
  *
  * Return: New exit status.
  */
