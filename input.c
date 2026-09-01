@@ -1,20 +1,35 @@
 #include "shell.h"
 
 /**
- * user_input - Reads a command line from the user.
+ * read_command - Reads a command from standard input.
  *
- * Return: Input line, or NULL on EOF/error.
+ * Return: Allocated command line, or NULL on EOF/error.
  */
-char *user_input(void)
+char *read_command(void)
 {
-	char *line = NULL;
-	size_t n = 0;
+	char *line;
+	size_t len;
+	ssize_t read;
 
-	if (getline(&line, &n, stdin) == -1)
+	line = NULL;
+	len = 0;
+
+	if (isatty(STDIN_FILENO))
+		printf("$ ");
+
+	read = getline(&line, &len, stdin);
+
+	if (read == -1)
 	{
+		if (isatty(STDIN_FILENO))
+			printf("\n");
+
 		free(line);
 		return (NULL);
 	}
+
+	if (read > 0 && line[read - 1] == '\n')
+		line[read - 1] = '\0';
 
 	return (line);
 }

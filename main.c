@@ -1,48 +1,48 @@
 #include "shell.h"
 
 /**
- * main - Entry point of the simple shell.
- * @ac: Number of arguments.
- * @av: Array of arguments.
+ * main - Entry point for the simple shell.
+ * @argc: Argument count.
+ * @argv: Argument vector.
+ * @envp: Environment variables.
  *
- * Return: Always 0.
+ * Return: Exit status.
  */
-int main(int ac, char **av)
+int main(int argc, char **argv, char **envp)
 {
 	char *line;
-	char **args;
-	int num_tokens = 0;
-	int line_number = 0;
+	char *command;
+	char *args[64];
+	int status;
 
-	(void)ac;
+	(void)argc;
+	(void)argv;
+
+	line = NULL;
+	status = 0;
 
 	while (1)
 	{
-		if (isatty(STDIN_FILENO))
-		{
-			printf("$ ");
-			fflush(stdout);
-		}
-
-		line = user_input();
+		line = read_command();
 
 		if (line == NULL)
-		{
-			if (isatty(STDIN_FILENO))
-				printf("\n");
 			break;
+
+		command = trim_command(line);
+
+		if (command[0] == '\0')
+		{
+			free(line);
+			line = NULL;
+			continue;
 		}
 
-		line_number++;
+		tokenize(command, args);
+		status = process_command(args, envp, status);
 
-		args = token(line, &num_tokens);
-
-		if (args != NULL && args[0] != NULL)
-			process_command(args, environ, av[0], line_number);
-
-		free_args(args);
 		free(line);
+		line = NULL;
 	}
 
-	return (0);
+	return (status);
 }
