@@ -1,28 +1,6 @@
 #include "shell.h"
 
 /**
- * get_path - Gets the PATH variable from the environment.
- * @env: Environment variables.
- *
- * Return: Pointer to PATH value, or NULL.
- */
-char *get_path(char **env)
-{
-	int i;
-
-	if (env == NULL)
-		return (NULL);
-
-	for (i = 0; env[i] != NULL; i++)
-	{
-		if (strncmp(env[i], "PATH=", 5) == 0)
-			return (env[i] + 5);
-	}
-
-	return (NULL);
-}
-
-/**
  * find_command - Finds the full path of a command.
  * @command: Command name.
  * @env: Environment variables.
@@ -57,4 +35,32 @@ char *find_command(char *command, char **env)
 	free(path_copy);
 
 	return (full_path);
+}
+
+/**
+ * This is a test code
+ * get_path - Finds PATH in the environment.
+ * @envp: Environment variables.
+ *
+ * Return: PATH value or NULL.
+ */
+char *get_path(char **envp)
+{
+	int i;
+
+	i = 0;
+
+	while (envp[i] != NULL)
+	{
+		if (envp[i][0] == 'P' &&
+		    envp[i][1] == 'A' &&
+		    envp[i][2] == 'T' &&
+		    envp[i][3] == 'H' &&
+		    envp[i][4] == '=')
+			return (envp[i] + 5);
+
+		i++;
+	}
+
+	return (NULL);
 }
