@@ -14,12 +14,14 @@ int main(int argc, char **argv, char **envp)
 	char *command;
 	char *args[64];
 	int status;
+	int line_number;
 
 	(void)argc;
 	(void)argv;
 
 	line = NULL;
 	status = 0;
+	line_number = 0;
 
 	while (1)
 	{
@@ -27,6 +29,8 @@ int main(int argc, char **argv, char **envp)
 
 		if (line == NULL)
 			break;
+
+		line_number++;
 
 		command = trim_command(line);
 
@@ -38,7 +42,7 @@ int main(int argc, char **argv, char **envp)
 		}
 
 		tokenize(command, args);
-		status = process_command(args, envp, status);
+		status = process_command(args, envp, status, line_number);
 
 		free(line);
 		line = NULL;

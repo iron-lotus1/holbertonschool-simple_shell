@@ -8,7 +8,7 @@
  *
  * Return: New exit status.
  */
-int process_command(char **args, char **envp, int status)
+int process_command(char **args, char **envp, int status, int line_number)
 {
 	char *command_path;
 	int builtin_status;
@@ -22,7 +22,8 @@ int process_command(char **args, char **envp, int status)
 
 	if (command_path == NULL)
 	{
-		fprintf(stderr, "./hsh: %s: not found\n", args[0]);
+		fprintf(stderr, "./hsh: %d: %s: not found\n",
+				line_number, args[0]);
 		return (127);
 	}
 
