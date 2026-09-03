@@ -1,97 +1,98 @@
-.TH SIMPLE_SHELL 1 "August 2026" "Holberton School" "User Commands"
 
+---
+
+### `man_1_simple_shell` (Student style)
+
+```groff
+.TH HSH 1 "September 2026" "Holberton School" "User Commands"
 .SH NAME
-simple_shell \- simple UNIX command-line interpreter
-
+hsh \- simple UNIX command line interpreter
 .SH SYNOPSIS
 .B ./hsh
-
 .SH DESCRIPTION
-.B simple_shell
-is a simple UNIX command-line interpreter written in C.
-
-The shell displays a prompt, waits for the user to type a command, executes the command, and displays the prompt again after the command has been executed.
-
-Command lines are simple and contain only one word.
-
-.SH USAGE
-Start the shell by running:
-
+hsh is a simple shell written in C for the Holberton School project.
+.PP
+It reads commands from the user (or from a pipe/file), finds the program
+using the PATH, and executes it in a child process.
+.PP
+It works in both interactive and non-interactive modes.
+.SH FEATURES
+.IP \(bu 2
+Shows a prompt ($ ) in interactive mode
+.IP \(bu 2
+Can execute commands with arguments
+.IP \(bu 2
+Uses the PATH to find commands
+.IP \(bu 2
+Supports absolute and relative paths
+.IP \(bu 2
+Has two built-in commands: exit and env
+.IP \(bu 2
+Handles Ctrl+D (EOF)
+.SH BUILT-IN COMMANDS
+.TP
+.B exit
+Exits the shell
+.TP
+.B env
+Prints all environment variables
+.SH HOW TO USE
+.SS Interactive mode
 .PP
 .nf
 $ ./hsh
-.fi
-
-.PP
-The shell displays a prompt and waits for the user to enter a command.
-
-.SH COMMAND EXECUTION
-The shell reads a command from standard input and attempts to execute it.
-
-The command line contains only one word and no arguments are passed to programs.
-
-After the command has been executed, the shell displays the prompt again.
-
-.SH ERROR HANDLING
-If an executable cannot be found, the shell prints an error message and displays the prompt again.
-
-The shell handles execution errors and continues running when possible.
-
-.SH END OF FILE
-The shell handles the end-of-file condition.
-
-Pressing Ctrl-D terminates the interactive session.
-
-.SH LIMITATIONS
-This shell is intentionally simple.
-
-It does not use the PATH environment variable.
-
-It does not implement built-in commands.
-
-It does not handle commands with arguments.
-
-It does not handle semicolons, pipes, redirections, or other advanced shell features.
-
-It does not handle the following special characters:
-
-.PP
-.nf
-" ' ` \\ * & #
-.fi
-
-.PP
-The shell does not support cursor movement.
-
-.SH EXAMPLES
-Start the shell:
-
-.PP
-.nf
-$ ./hsh
-.fi
-
-.PP
-Execute a command:
-
-.PP
-.nf
 $ ls
 $ pwd
-$ whoami
+$ ls -l /tmp
+$ env
+$ exit
 .fi
-
+.SS Non-interactive mode
 .PP
-Exit the shell using Ctrl-D:
-
+.nf
+$ echo "ls" | ./hsh
+$ echo "ls -l" | ./hsh
+$ cat commands.txt | ./hsh
+.fi
+.SH ERRORS
+If the command does not exist, the shell prints:
+.PP
+.nf
+./hsh: 1: command: not found
+.fi
+.PP
+and returns the status 127.
+.SH LIMITATIONS
+This shell does not support:
+.IP \(bu 2
+Pipes (|)
+.IP \(bu 2
+Redirections (>, <)
+.IP \(bu 2
+Command separators (;)
+.IP \(bu 2
+Logical operators (&&, ||)
+.IP \(bu 2
+Quotes or escaping
+.IP \(bu 2
+Background jobs (&)
+.SH EXAMPLES
 .PP
 .nf
 $ ./hsh
-$ Ctrl-D
+$ /bin/ls
+$ ls -la
+$ env
+$ exit
 .fi
-
-.SH BUGS
-This is a simple shell implementation and does not provide all the features available in standard UNIX shells.
-
+.PP
+.nf
+$ echo "pwd" | ./hsh
+$ printf "ls\\nenv\\nexit\\n" | ./hsh
+.fi
+.SH SEE ALSO
+sh(1), bash(1), fork(2), execve(2), wait(2)
 .SH AUTHORS
-See the AUTHORS file in the project repository for a list of contributors.
+See the AUTHORS file.
+.SH BUGS
+This is a simple educational shell. It does not have all the features of a real shell like bash.
