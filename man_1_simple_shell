@@ -1,40 +1,49 @@
 
 ---
 
-### `man_1_simple_shell` (Student style)
 
-```groff
 .TH HSH 1 "September 2026" "Holberton School" "User Commands"
 .SH NAME
 hsh \- simple UNIX command line interpreter
 .SH SYNOPSIS
 .B ./hsh
 .SH DESCRIPTION
+
 hsh is a simple shell written in C for the Holberton School project.
 .PP
+
 It reads commands from the user (or from a pipe/file), finds the program
 using the PATH, and executes it in a child process.
 .PP
+
 It works in both interactive and non-interactive modes.
 .SH FEATURES
 .IP \(bu 2
+
 Shows a prompt ($ ) in interactive mode
 .IP \(bu 2
+
 Can execute commands with arguments
 .IP \(bu 2
+
 Uses the PATH to find commands
 .IP \(bu 2
+
 Supports absolute and relative paths
 .IP \(bu 2
+
 Has two built-in commands: exit and env
 .IP \(bu 2
+
 Handles Ctrl+D (EOF)
 .SH BUILT-IN COMMANDS
 .TP
 .B exit
+
 Exits the shell
 .TP
 .B env
+
 Prints all environment variables
 .SH HOW TO USE
 .SS Interactive mode
@@ -55,26 +64,34 @@ $ echo "ls -l" | ./hsh
 $ cat commands.txt | ./hsh
 .fi
 .SH ERRORS
+
 If the command does not exist, the shell prints:
 .PP
 .nf
 ./hsh: 1: command: not found
 .fi
 .PP
+
 and returns the status 127.
 .SH LIMITATIONS
+
 This shell does not support:
 .IP \(bu 2
 Pipes (|)
 .IP \(bu 2
+
 Redirections (>, <)
 .IP \(bu 2
+
 Command separators (;)
 .IP \(bu 2
+
 Logical operators (&&, ||)
 .IP \(bu 2
+
 Quotes or escaping
 .IP \(bu 2
+
 Background jobs (&)
 .SH EXAMPLES
 .PP
@@ -91,8 +108,11 @@ $ echo "pwd" | ./hsh
 $ printf "ls\\nenv\\nexit\\n" | ./hsh
 .fi
 .SH SEE ALSO
+
 sh(1), bash(1), fork(2), execve(2), wait(2)
 .SH AUTHORS
+
 See the AUTHORS file.
 .SH BUGS
+
 This is a simple educational shell. It does not have all the features of a real shell like bash.
