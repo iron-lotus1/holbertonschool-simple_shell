@@ -100,22 +100,22 @@ Command lines contain only one word.
 
 ## Files
 
-|       File             |      Description                           |
-|       ----             |      -----------                           |
-| [main.c](./main.c)     | Main entry point of the shell              |
-| `prompt.c`             | Reads the command and shows prompt         |
-| `token.c`              | Trims and splits command                   |
-| `process.c`            | Decides what to do with the command        |
-| `builtins.c`           | Handles exit and env                       |
-| `env.c`                | Prints environment variables               |
-| `path.c`               | Finds the command in the PATH              |
-| `execute.c`            | Executes the command with execve           |
-| `fork.c`               | Creates a child process                    |
-| `wait.c                | Waits for the child process                |
-|  `shell.h`             | Header file containing function prototypes |
-| `README.md`            | Project documentation                      |
-| `man_1_simple_shell`   | Manual page for the shell                  |
-| `AUTHORS`              | List of project contributors               |
+|       File                                   |      Description                           |
+|       ----                                   |      -----------                           |
+| [main.c](./main.c)                           | Main entry point of the shell              |
+| [prompt.c](./promt.c)                        | Reads the command and shows prompt         |
+| [token.c](./token.c)                         | Trims and splits command                   |
+| [process.c](./process.c)                     | Decides what to do with the command        |
+| [builtins.c](./builtin.c)                    | Handles exit and env                       |
+| [env.c](./env.c)                             | Prints environment variables               |
+| [path.c](./path.c)                           | Finds the command in the PATH              |
+| [execute.c](./execute.c)                     | Executes the command with execve           |
+| [fork.c](./fork.c)                           | Creates a child process                    |
+| [wait.c](./wait.c)                           | Waits for the child process                |
+| [shell.h](./shell.h)                         | Header file containing function prototypes |
+| [README.md](./README.md)                     | Project documentation                      |
+| [man_1_simple_shell](./man_1_simple_shell)   | Manual page for the shell                  |
+| [AUTHORS](./AUTHORS)                         | List of project contributors               |
 
 ## Man Page
 
