@@ -1,52 +1,58 @@
-
----
-
-
 .TH HSH 1 "September 2026" "Holberton School" "User Commands"
+
+
 .SH NAME
 hsh \- simple UNIX command line interpreter
+
+
 .SH SYNOPSIS
 .B ./hsh
+
+
 .SH DESCRIPTION
+hsh is a simple UNIX command line interpreter written in C
+as part of the Holberton School curriculum.
 
-hsh is a simple shell written in C for the Holberton School project.
 .PP
+It reads commands from standard input, finds the executable
+using the PATH environment variable (or absolute/relative paths),
+and executes it in a child process.
 
-It reads commands from the user (or from a pipe/file), finds the program
-using the PATH, and executes it in a child process.
 .PP
+The shell works in both interactive and non-interactive modes.
 
-It works in both interactive and non-interactive modes.
+
 .SH FEATURES
 .IP \(bu 2
-
-Shows a prompt ($ ) in interactive mode
+Displays a prompt ($ ) in interactive mode
 .IP \(bu 2
-
-Can execute commands with arguments
+Executes commands found in the PATH
 .IP \(bu 2
-
-Uses the PATH to find commands
+Supports commands with arguments
 .IP \(bu 2
-
 Supports absolute and relative paths
 .IP \(bu 2
-
-Has two built-in commands: exit and env
+Built-in commands: exit and env
 .IP \(bu 2
+Handles end-of-file (Ctrl+D)
+.IP \(bu 2
+Works with pipes and input redirection
 
-Handles Ctrl+D (EOF)
+
 .SH BUILT-IN COMMANDS
 .TP
 .B exit
+Exits the shell.
 
-Exits the shell
 .TP
 .B env
+Prints the current environment variables.
 
-Prints all environment variables
-.SH HOW TO USE
-.SS Interactive mode
+
+.SH INTERACTIVE MODE
+When run in a terminal, the shell shows a prompt and waits
+for the user to type a command:
+
 .PP
 .nf
 $ ./hsh
@@ -56,44 +62,71 @@ $ ls -l /tmp
 $ env
 $ exit
 .fi
-.SS Non-interactive mode
+
+
+.SH NON-INTERACTIVE MODE
+Commands can be passed through a pipe or a file:
+
 .PP
 .nf
 $ echo "ls" | ./hsh
 $ echo "ls -l" | ./hsh
 $ cat commands.txt | ./hsh
+$ ./hsh < commands.txt
 .fi
-.SH ERRORS
 
-If the command does not exist, the shell prints:
+.PP
+No prompt is displayed in non-interactive mode.
+
+
+.SH ERROR HANDLING
+If a command cannot be found, the shell prints:
+
 .PP
 .nf
-./hsh: 1: command: not found
+./hsh: <line>: <command>: not found
 .fi
+
 .PP
+and returns the exit status 127.
 
-and returns the status 127.
+
+.SH EXIT STATUS
+.TP
+0
+The command was executed successfully.
+
+.TP
+127
+The command was not found.
+
+.TP
+Other
+The exit status of the last executed command.
+
+
 .SH LIMITATIONS
-
 This shell does not support:
+
 .IP \(bu 2
 Pipes (|)
 .IP \(bu 2
-
-Redirections (>, <)
+Redirections (>, <, >>)
 .IP \(bu 2
-
 Command separators (;)
 .IP \(bu 2
-
 Logical operators (&&, ||)
 .IP \(bu 2
-
-Quotes or escaping
+Quotes or escape characters
 .IP \(bu 2
+Background processes (&)
+.IP \(bu 2
+Aliases, history, or job control
 
-Background jobs (&)
+
 .SH EXAMPLES
+Interactive:
+
 .PP
 .nf
 $ ./hsh
@@ -102,17 +135,29 @@ $ ls -la
 $ env
 $ exit
 .fi
+
+.PP
+Non-interactive:
+
 .PP
 .nf
 $ echo "pwd" | ./hsh
 $ printf "ls\\nenv\\nexit\\n" | ./hsh
 .fi
+
+
 .SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR fork (2),
+.BR execve (2),
+.BR wait (2)
 
-sh(1), bash(1), fork(2), execve(2), wait(2)
+
 .SH AUTHORS
+See the AUTHORS file in the project repository.
 
-See the AUTHORS file.
+
 .SH BUGS
-
-This is a simple educational shell. It does not have all the features of a real shell like bash.
+This is an educational shell and does not implement
+all the features of a full UNIX shell such as bash.
