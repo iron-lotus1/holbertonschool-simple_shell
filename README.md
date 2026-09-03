@@ -103,10 +103,10 @@ Command lines contain only one word.
 |       File                                   |      Description                           |
 |       ----                                   |      -----------                           |
 | [main.c](./main.c)                           | Main entry point of the shell              |
-| [prompt.c](./promt.c)                        | Reads the command and shows prompt         |
+| [prompt.c](./prompt.c)                       | Reads the command and shows prompt         |
 | [token.c](./token.c)                         | Trims and splits command                   |
 | [process.c](./process.c)                     | Decides what to do with the command        |
-| [builtins.c](./builtin.c)                    | Handles exit and env                       |
+| [builtins.c](./builtins.c)                   | Handles exit and env                       |
 | [env.c](./env.c)                             | Prints environment variables               |
 | [path.c](./path.c)                           | Finds the command in the PATH              |
 | [execute.c](./execute.c)                     | Executes the command with execve           |
