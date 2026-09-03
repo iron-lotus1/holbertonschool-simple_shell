@@ -42,4 +42,3 @@ char *search_path(char *path, char *command);
 char *find_command(char *command, char **envp);
 
 #endif
-
